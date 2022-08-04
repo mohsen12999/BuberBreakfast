@@ -1,6 +1,5 @@
 ﻿using BuberBreakfast.Contracts.Breakfast;
 using BuberBreakfast.Models;
-using BuberBreakfast.ServiceErrors;
 using BuberBreakfast.Services.Breakfasts;
 using ErrorOr;
 using Microsoft.AspNetCore.Mvc;
@@ -32,17 +31,11 @@ public class BreakfastsController : ApiController
 
         var createBreakfastResult = _breakfastService.CreateBreakfast(breakfast);
 
-        if (createBreakfastResult.IsError)
-        {
-            return Problem(createBreakfastResult.Errors);
-        }
-
-        return CreatedAtAction(
-            actionName: nameof(GetBreakfast),
-            routeValues: new { id = breakfast.Id },
-            value: MapBreakfastResponse(breakfast));
+        return createBreakfastResult.Match(
+            created => CreatedAtGetBreakfast(breakfast),
+            errors => Problem(errors)
+        );
     }
-
 
     [HttpGet("{id:guid}")]
     public IActionResult GetBreakfast(Guid id)
@@ -69,11 +62,15 @@ public class BreakfastsController : ApiController
             request.Sweet
         );
 
-        _breakfastService.UpsertBreakfast(breakfast);
+        var upsertBreakfastResult = _breakfastService.UpsertBreakfast(breakfast);
+
 
         // return 201 if a new breakfast was created
 
-        return NoContent();
+        return upsertBreakfastResult.Match(
+            upserted => upserted.IsNewlyCreated ? CreatedAtGetBreakfast(breakfast) : NoContent(),
+            errors => Problem(errors)
+        );
     }
 
     [HttpDelete("{id:guid}")]
@@ -84,7 +81,7 @@ public class BreakfastsController : ApiController
         return deleteBreakfastResult.Match(
             deleted => NoContent(),
             errors => Problem(errors)
-            );
+        );
     }
 
     private static BreakfastResponse MapBreakfastResponse(Breakfast breakfast)
@@ -99,5 +96,14 @@ public class BreakfastsController : ApiController
             breakfast.Savory,
             breakfast.Sweet);
         return response;
+    }
+
+    private CreatedAtActionResult CreatedAtGetBreakfast(Breakfast breakfast)
+    {
+        return CreatedAtAction(
+            actionName: nameof(GetBreakfast),
+            routeValues: new { id = breakfast.Id },
+            value: MapBreakfastResponse(breakfast)
+        );
     }
 }
