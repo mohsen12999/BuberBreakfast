@@ -30,29 +30,19 @@ public class BreakfastsController : ApiController
             request.Sweet
         );
 
-        _breakfastService.CreateBreakfast(breakfast);
+        var createBreakfastResult = _breakfastService.CreateBreakfast(breakfast);
 
-        var response = MapBreakfastResponse(breakfast);
+        if (createBreakfastResult.IsError)
+        {
+            return Problem(createBreakfastResult.Errors);
+        }
 
         return CreatedAtAction(
             actionName: nameof(GetBreakfast),
             routeValues: new { id = breakfast.Id },
-            value: response);
+            value: MapBreakfastResponse(breakfast));
     }
 
-    private static BreakfastResponse MapBreakfastResponse(Breakfast breakfast)
-    {
-        var response = new BreakfastResponse(
-            breakfast.Id,
-            breakfast.Name,
-            breakfast.Description,
-            breakfast.StartDateTime,
-            breakfast.EndDateTime,
-            breakfast.LastModifiedDateTime,
-            breakfast.Savory,
-            breakfast.Sweet);
-        return response;
-    }
 
     [HttpGet("{id:guid}")]
     public IActionResult GetBreakfast(Guid id)
@@ -89,8 +79,25 @@ public class BreakfastsController : ApiController
     [HttpDelete("{id:guid}")]
     public IActionResult DeleteBreakfast(Guid id)
     {
-        _breakfastService.DeleteBreakfast(id);
+        var deleteBreakfastResult = _breakfastService.DeleteBreakfast(id);
 
-        return NoContent();
+        return deleteBreakfastResult.Match(
+            deleted => NoContent(),
+            errors => Problem(errors)
+            );
+    }
+
+    private static BreakfastResponse MapBreakfastResponse(Breakfast breakfast)
+    {
+        var response = new BreakfastResponse(
+            breakfast.Id,
+            breakfast.Name,
+            breakfast.Description,
+            breakfast.StartDateTime,
+            breakfast.EndDateTime,
+            breakfast.LastModifiedDateTime,
+            breakfast.Savory,
+            breakfast.Sweet);
+        return response;
     }
 }
