@@ -4,6 +4,8 @@
 
 - make solution: `dotnet new sln -o BuberBreakfast`.
 - add git ignore file: `dotnet new gitignore`.
+- add class library for DTOs: `dotnet new classlib -o BuberBreakfast.Contracts`.
+- add web api: `dotnet new webapi -o BuberBreakfast`.
 
 ## Reference
 
