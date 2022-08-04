@@ -34,15 +34,7 @@ public class BreakfastsController : ControllerBase
 
         _breakfastService.CreateBreakfast(breakfast);
 
-        var response = new BreakfastResponse(
-            breakfast.Id,
-            breakfast.Name,
-            breakfast.Description,
-            breakfast.StartDateTime,
-            breakfast.EndDateTime,
-            breakfast.LastModifiedDateTime,
-            breakfast.Savory,
-            breakfast.Sweet);
+        var response = MapBreakfastResponse(breakfast);
 
         return CreatedAtAction(
             actionName: nameof(GetBreakfast),
@@ -50,19 +42,8 @@ public class BreakfastsController : ControllerBase
             value: response);
     }
 
-    [HttpGet("{id:guid}")]
-    public IActionResult GetBreakfast(Guid id)
+    private static BreakfastResponse MapBreakfastResponse(Breakfast breakfast)
     {
-        ErrorOr<Breakfast> getBreakfastResult = _breakfastService.GetBreakfast(id);
-
-        if (getBreakfastResult.IsError &&
-            getBreakfastResult.FirstError == Errors.Breakfast.NotFound)
-        {
-            return NotFound();
-        }
-
-        var breakfast = getBreakfastResult.Value;
-        
         var response = new BreakfastResponse(
             breakfast.Id,
             breakfast.Name,
@@ -72,8 +53,18 @@ public class BreakfastsController : ControllerBase
             breakfast.LastModifiedDateTime,
             breakfast.Savory,
             breakfast.Sweet);
+        return response;
+    }
 
-        return Ok(response);
+    [HttpGet("{id:guid}")]
+    public IActionResult GetBreakfast(Guid id)
+    {
+        ErrorOr<Breakfast> getBreakfastResult = _breakfastService.GetBreakfast(id);
+
+        return getBreakfastResult.Match(
+            breakfast => Ok(MapBreakfastResponse(breakfast)),
+            errors => Problem()
+        );
     }
 
     [HttpPut("{id:guid}")]
