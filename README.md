@@ -6,7 +6,8 @@
 - add git ignore file: `dotnet new gitignore`.
 - add class library for DTOs: `dotnet new classlib -o BuberBreakfast.Contracts`.
 - add web api: `dotnet new webapi -o BuberBreakfast`.
-- add projects to sln: `dotnet sln add (ls -r **/*.csproj)` or `dotnet sln add .\BuberBreakfast.Contracts\ .\BuberBreakfast\`
+- add projects to sln: `dotnet sln add (ls -r **/*.csproj)` or `dotnet sln add .\BuberBreakfast.Contracts\ .\BuberBreakfast\`.
+- add breakfast contract reference: `dotnet add .\BuberBreakfast\ reference .\BuberBreakfast.Contracts\`.
 
 ## Reference
 
