@@ -6,25 +6,25 @@ namespace BuberBreakfast.Controllers;
 [ApiController]
 public class BreakfastsController:ControllerBase
 {
-    [HttpPost("/breakfast")]
+    [HttpPost("/breakfasts")]
     public IActionResult CreateBreakfast(CreateBreakfastRequest request)
     {
         return Ok(request);
     }
     
-    [HttpGet("/breakfast/{id:guid}")]
+    [HttpGet("/breakfasts/{id:guid}")]
     public IActionResult GetBreakfast(Guid id)
     {
         return Ok(id);
     }
     
-    [HttpPut("/breakfast/{id:guid}")]
+    [HttpPut("/breakfasts/{id:guid}")]
     public IActionResult UpsertBreakfast(Guid id, UpsertBreakfastRequest request)
     {
         return Ok(request);
     }
     
-    [HttpDelete("/breakfast/{id:guid}")]
+    [HttpDelete("/breakfasts/{id:guid}")]
     public IActionResult DeleteBreakfast(Guid id)
     {
         return Ok(id);
