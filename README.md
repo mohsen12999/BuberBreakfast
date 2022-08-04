@@ -2,7 +2,8 @@
 
 - course that developers can use as a template to onboard/structure small to medium sized industry-level CRUD applications.
 
-- make solution: `dotnet new sln -o BuberBreakfast`
+- make solution: `dotnet new sln -o BuberBreakfast`.
+- add git ignore file: `dotnet new gitignore`.
 
 ## Reference
 
