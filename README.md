@@ -15,6 +15,10 @@
 
 - using [Rest Client](https://github.com/Huachao/vscode-restclient) extension for vscode
 
+## Error Handling
+
+- add ErrorOr package: `dotnet add .\BuberBreakfast\ package ErrorOr`.
+
 ## Reference
 
 - base on [Youtube video](https://youtu.be/PmDJIooZjBE) by [Amichai Mantinband](https://twitter.com/amantinband)
